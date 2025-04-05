@@ -3,27 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HomeSectionCreateRequest;
-use App\Http\Requests\HomeSectionUpdateRequest;
 use App\Models\Image;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Yajra\DataTables\Facades\DataTables;
 
-class HomeSectionController extends Controller
+class TeamImageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $home_images = Image::category('home-section')
-                            ->active()
-                            ->ordered()
-                            ->get();
-
-        return view('modules.dashboard.home.index', compact('home_images'));
+        //
     }
 
     /**
@@ -31,7 +22,7 @@ class HomeSectionController extends Controller
      */
     public function create()
     {
-        return view('modules.dashboard.home.create');
+        return view('modules.dashboard.team.image.create');
     }
 
     /**
@@ -40,21 +31,21 @@ class HomeSectionController extends Controller
     public function store(HomeSectionCreateRequest $request, Image $image)
     {
         if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('images/home', 'public');
+            $path = $request->file('file')->store('images/team', 'public');
             $image->file_path = $path;
         }
 
-        $maxOrder = $image->category('home-section')->max('order');
+        $maxOrder = $image->category('team-section')->max('order');
         $nextOrder = $maxOrder !== null ? $maxOrder + 1 : 1;
 
         $image->name =  $request->name;
         $image->type = 'background';
-        $image->category = 'home-section';
+        $image->category = 'team-section';
         $image->order = $nextOrder;
         $image->description =  $request->description;
         $image->save();
 
-        return redirect()->to('/dashboard/home')->with('success', 'Home Section updated successfully!');
+        return redirect()->to('/dashboard/team')->with('success', 'Team Section updated successfully!');
     }
 
     /**
@@ -68,21 +59,22 @@ class HomeSectionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id, Image $image)
+    public function edit(string $id)
     {
+        $image = Image::query();
+
         $data_image = $image->where('id', $id)->first();
 
-        $order = $image->category('home-section')->max('order');
+        $order = $image->category('team-section')->max('order');
 
-        return view('modules.dashboard.home.edit', compact('data_image', 'order'));
+        return view('modules.dashboard.team.image.edit', compact('data_image', 'order'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(HomeSectionUpdateRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
-
         $image = Image::findOrFail($id);
 
         $newOrder = (int) $request->order;
@@ -92,13 +84,11 @@ class HomeSectionController extends Controller
             $newOrder = $request->order;
         
             if ($newOrder < $oldOrder) {
-                // Geser item yang ada di range [newOrder, oldOrder - 1] => order naik (geser ke bawah)
                 Image::where('category', $image->category)
                     ->where('id', '!=', $image->id)
                     ->whereBetween('order', [$newOrder, $oldOrder - 1])
                     ->increment('order');
             } elseif ($newOrder > $oldOrder) {
-                // Geser item yang ada di range [oldOrder + 1, newOrder] => order turun (geser ke atas)
                 Image::where('category', $image->category)
                     ->where('id', '!=', $image->id)
                     ->whereBetween('order', [$oldOrder + 1, $newOrder])
@@ -117,12 +107,12 @@ class HomeSectionController extends Controller
                 Storage::disk('public')->delete($image->file_path);
             }
 
-            $image->file_path = $request->file('file')->store('images/home', 'public');
+            $image->file_path = $request->file('file')->store('images/team', 'public');
         }
 
         $image->save();
 
-        return redirect()->to('/dashboard/home')->with('success', 'Image updated successfully!');
+        return redirect()->to('/dashboard/team')->with('success', 'Image updated successfully!');
     }
 
     /**
@@ -139,10 +129,10 @@ class HomeSectionController extends Controller
 
         $image->delete();
 
-        Image::category('home-section')
+        Image::category('team-section')
         ->where('order', '>', $deletedOrder)
         ->decrement('order');
 
-        return redirect()->to('/dashboard/home')->with('success', 'Image deleted and order updated!');
+        return redirect()->to('/dashboard/team')->with('success', 'Image deleted and order updated!');
     }
 }

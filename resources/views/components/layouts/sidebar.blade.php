@@ -15,16 +15,16 @@
 
                 @foreach ($menus as $menu)
                     @if(isset($menu['submenus']))
-                    <li class="sidebar-item has-sub {{ request()->is($menu['route'] . "/*") ? 'active' : '' }}">
+                    <li class="sidebar-item has-sub {{ request()->is($menu['route'] . '/*') || request()->is($menu['route'])  ? 'active' : '' }}">
                         <a href="#" class="sidebar-link">
                             <i class="{{$menu['icon']}}"></i>
                             <span>{{ $menu['title'] }}</span>
                         </a>
                         
-                        <ul class="submenu {{ request()->is($menu['route'] . "/*") ? 'active submenu-open' : '' }}">
+                        <ul class="submenu {{ request()->is($menu['route'] . "/*") || request()->is($menu['route']) ? 'active submenu-open' : '' }}">
                             @foreach($menu['submenus'] as $submenu)
-                            <li class="submenu-item">
-                                <a href="{{ $submenu['route'] }}" class="submenu-link {{ request()->is($submenu['route']) ? 'active' : '' }}">{{ $submenu['title'] }}</a>
+                            <li class="submenu-item {{ request()->is($submenu["route"]) ? 'active' : '' }}">
+                                <a href="{{ url($submenu['route']) }}" class="submenu-link">{{ $submenu['title'] }}</a>
                             </li>
                             @endforeach
                         </ul>

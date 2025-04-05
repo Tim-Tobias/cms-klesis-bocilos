@@ -1,16 +1,17 @@
 @extends('app')
 
-@section('title', 'Admin Dashboard - Edit Home Section')
+@section('title', 'Admin Dashboard - Edit Team Image Section')
 
 @section('content')
 <div class="page-heading">
   <div class="page-title">
       <div class="row">
-          <x-title-content :title="'Home Image Create'" :description="'this is for section one content'"/>
+          <x-title-content :title="'Team Image Create'" :description="'this is for section team'"/>
 
           <x-breadcrumb :items="[
               ['name' => 'Dashboard', 'url' => '/dashboard'],
-              ['name' => 'Home'],
+              ['name' => 'Team Section', 'url' => '/dashboard/team/'],
+              ['name' => 'Edit'],
           ]" />
       </div>
   </div>
@@ -18,7 +19,7 @@
   <section class="section">
     <div class="card">
         <div class="card-body">
-          <form action="{{ "/dashboard/home/" . $data_image->id }}" method="POST" enctype="multipart/form-data">
+          <form action="{{ "/dashboard/team/image/" . $data_image->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

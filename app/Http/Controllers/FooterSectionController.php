@@ -3,55 +3,52 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AboutBackgroundRequest;
-use App\Http\Requests\AboutContentRequest;
 use App\Models\Content;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
-class AboutSectionController extends Controller
+class FooterSectionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $image = Image::category('about-section')->first();
+        $image = Image::category('footer-section')->first();
+        $contents = Content::category('footer-section')->active()->get();
 
-        $contents = Content::category('about-section')->active()->get();
-
-        return view('modules.dashboard.about.index', compact('image', 'contents'));
+        return view('modules.dashboard.footer.index', compact('image', 'contents'));
     }
 
     public function EditBackground(AboutBackgroundRequest $request, Image $image)
     {
-        $dataImage = $image->category('about-section')->first();
+        $dataImage = $image->category('footer-section')->first();
 
         if ($dataImage) {
             if ($dataImage->file_path && Storage::disk('public')->exists($dataImage->file_path)) {
                 Storage::disk('public')->delete($dataImage->file_path);
             }
     
-            $path = $request->file('file')->store('images/about', 'public');
+            $path = $request->file('file')->store('images/footer', 'public');
             $dataImage->file_path = $path;
             
             $dataImage->save();
         }else {
-            $image->name = "about-background";
-            $image->category = 'about-section';
+            $image->name = "footer-background";
+            $image->category = 'footer-section';
             $image->description = 'background image';
             $image->type = 'background';
             $image->order = 1;
             $image->active = true;
 
-            $path = $request->file('file')->store('images/about', 'public');
+            $path = $request->file('file')->store('images/footer', 'public');
             $image->file_path = $path;
 
             $image->save();
         }
 
-        return redirect()->to('/dashboard/about')->with('success', 'Successfully Update Background Image');
+        return redirect()->to('/dashboard/footer')->with('success', 'Successfully Update Background Image');
     }
 
     /**
@@ -59,20 +56,20 @@ class AboutSectionController extends Controller
      */
     public function create()
     {
-        return view('modules.dashboard.about.create');
+        return view('modules.dashboard.footer.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AboutContentRequest $request)
+    public function store(Request $request)
     {
-        $content = Content::category('about-section')->active()->first();
+        $content = Content::category('footer-section')->active()->first();
 
         if(!$content) {
             $newContent = new Content();
             $newContent->content = $request->content;
-            $newContent->category = 'about-section';
+            $newContent->category = 'footer-section';
             $newContent->active = true;
 
             $newContent->save();
@@ -81,7 +78,7 @@ class AboutSectionController extends Controller
             $content->save();
         }
 
-        return redirect()->to('/dashboard/about')->with('success', 'Successfully Updated Content About');
+        return redirect()->to('/dashboard/footer')->with('success', 'Successfully Updated Content Footer');
     }
 
     /**
@@ -97,22 +94,22 @@ class AboutSectionController extends Controller
      */
     public function edit(string $id)
     {
-        $content = Content::where('id', $id)->category('about-section')->active()->first();
+        $content = Content::where('id', $id)->category('footer-section')->active()->first();
 
-        return view('modules.dashboard.about.edit', compact('content'));
+        return view('modules.dashboard.footer.edit', compact('content'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(AboutContentRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         $content = Content::findOrFail($id);
 
         $content->content = $request->content;
         $content->save();
 
-        return redirect()->to('/dashboard/about')->with('success', 'Successfully Updated Content About');
+        return redirect()->to('/dashboard/footer')->with('success', 'Successfully Updated Content Footer');
     }
 
     /**

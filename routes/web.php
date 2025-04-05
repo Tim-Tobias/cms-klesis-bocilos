@@ -2,9 +2,17 @@
 
 use App\Http\Controllers\AboutSectionController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FooterSectionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomeSectionController;
+use App\Http\Controllers\MenuSectionController;
+use App\Http\Controllers\SignatureSectionController;
+use App\Http\Controllers\TeamImageController;
+use App\Http\Controllers\TeamSectionController;
+use App\Http\Controllers\TodayMenuSectionController;
+use App\Http\Requests\FooterSectionRequest;
 use Illuminate\Support\Facades\Route;
 
 
@@ -40,8 +48,25 @@ Route::middleware('auth')->group(function ($route) {
      * @uses DashboardController::index
      */
     $route->get('/', [DashboardController::class, 'index']);
+    
+    $route->patch('about/edit-background', [AboutSectionController::class, 'editBackground']);
+    $route->patch('signature/edit-background', [SignatureSectionController::class, 'editBackground']);
+    $route->patch('menu/edit-background', [MenuSectionController::class, 'editBackground']);
+    $route->patch('footer/edit-background', [FooterSectionController::class, 'editBackground']);
 
-    $route->resource('home', HomeSectionController::class);
+    $route->patch('menu/edit-file', [MenuSectionController::class, 'editFile']);
+
+    $route->resource('home', HomeSectionController::class)->except(['show']);
+    $route->resource('about', AboutSectionController::class)->except(['show']);
+    $route->resource('signature', SignatureSectionController::class)->except(['show']);
+    $route->resource('menu', MenuSectionController::class)->except(['show']);
+    $route->resource('team', TeamSectionController::class)->except(['show', 'delete']);
+    $route->resource('team/image', TeamImageController::class)->except(['index', 'show']);
+
+    $route->resource('today-menu/categories', CategoryController::class)->except(['show']);
+    $route->resource('/today-menu', TodayMenuSectionController::class)->except(['show']);
+
+    $route->resource('footer', FooterSectionController::class)->except(['show']);
   });
 
   /**

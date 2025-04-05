@@ -6,24 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Image extends Model
+class Content extends Model
 {
     use HasFactory;
 
-    protected $table = 'images';
+    protected $table = 'content';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'id',
-        'name',
-        'file_path',
+        'content',
         'category',
-        'type',
-        'order',
         'active',
     ];
-
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected static function boot()
     {
@@ -42,15 +38,5 @@ class Image extends Model
     public function scopeCategory($query, $category)
     {
         return $query->where('category', $category);
-    }
-
-    public function scopeType($query, $category)
-    {
-        return $query->where('type', $category);
-    }
-
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('order', 'asc');
     }
 }
