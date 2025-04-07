@@ -12,4 +12,9 @@ Route::middleware('token.auth')->group(function ($route) {
     $route->get('home-section', [FrontendController::class, 'home']);
     $route->get('about-section', [FrontendController::class, 'about']);
     $route->get('signature-section', [FrontendController::class, 'signature']);
+    $route->get('menu-section', [FrontendController::class, 'menu']);
+    $route->get('team-section', [FrontendController::class, 'team']);
+    $route->get('categories', [FrontendController::class, 'categories']);
+    $route->get('/today-menu', [FrontendController::class, 'todayMenu']);
+    $route->get('/footer-section', [FrontendController::class, 'footer']);
 });

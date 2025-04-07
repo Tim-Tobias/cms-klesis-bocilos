@@ -60,7 +60,18 @@
 
             <h6>Is Active</h6>
             <div class="form-check form-switch mb-3">
-                <input class="form-check-input" name="active" value="1" type="checkbox" id="flexSwitchCheckChecked" checked="{{ $data_image->active }}">
+                <input class="form-check-input" name="active" value="1" type="checkbox" id="flexSwitchCheckChecked" {{ $data_image->active ? "checked" : "" }}>
+                <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
+                @error('active')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+
+            <h6>Highlight</h6>
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" name="highlight" value="1" type="checkbox" id="flexSwitchCheckChecked" {{ $data_image->highlight ? "checked" : "" }}>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
                 @error('active')
                     <span class="invalid-feedback" role="alert">

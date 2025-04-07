@@ -81,13 +81,13 @@
     <div class="card">
         <div class="card-header d-flex align-items-center justify-content-between">
             <h5 class="card-title">
-                Signature Image
+                Menu Image
             </h5>
             
             <div class="d-flex gap-3">
                 <button id="saveOrder" class="btn btn-info btn-sm d-none">Save Order</button>
 
-                @if (count($images) < 3)
+                @if (count($images) < 5)
                 <a class="btn btn-primary btn-sm d-flex" href="/dashboard/menu/create">
                     <i class="bi bi-plus mr-2"></i>
                     Create
@@ -105,6 +105,7 @@
                             <th>Image</th>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Highlight</th>
                             <th>Active</th>
                             <th>Action</th>
                         </tr>
@@ -117,10 +118,17 @@
                             <td>{{ $image->name }}</td>
                             <td>{{ $image->description }}</td>
                             <td>
+                                @if ($image->highlight)
+                                <span class="badge bg-success">Active</span>
+                                @else
+                                <span class="badge bg-danger">Deactive</span>
+                                @endif
+                            </td>
+                            <td>
                                 @if ($image->active)
                                 <span class="badge bg-success">Active</span>
                                 @else
-                                <span class="badge bg-error">Deactive</span>
+                                <span class="badge bg-danger">Deactive</span>
                                 @endif
                             </td>
                             <td>

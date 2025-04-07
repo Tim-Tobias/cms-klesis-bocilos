@@ -19,6 +19,7 @@ class Image extends Model
         'category',
         'type',
         'order',
+        'highlight',
         'active',
     ];
 

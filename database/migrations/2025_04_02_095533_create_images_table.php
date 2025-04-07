@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('file_path');
             $table->text('description')->nullable();
+            $table->boolean('highlight')->default(false);
             $table->enum('category', ['home-section', 'about-section', 'story-section', 'team-section', 'signature-section', 'menu-section', 'today-menu-section', 'footer-section']);
             $table->enum('type', ['image', 'background']);
             $table->integer('order')->default(0);

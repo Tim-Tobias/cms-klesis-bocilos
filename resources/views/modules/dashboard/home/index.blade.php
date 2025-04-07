@@ -62,7 +62,7 @@
                                 @if ($image->active)
                                 <span class="badge bg-success">Active</span>
                                 @else
-                                <span class="badge bg-error">Deactive</span>
+                                <span class="badge bg-danger">Deactive</span>
                                 @endif
                             </td>
                             <td>

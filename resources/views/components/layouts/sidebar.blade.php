@@ -4,7 +4,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
                     <a href="{{ url('/') }}">
-                        <img src="{{ asset('assets/compiled/svg/logo.svg') }}" alt="Logo">
+                        <img src="{{ asset('LOGO PUTIH.png') }}" alt="Logo">
                     </a>
                 </div>
             </div>

@@ -159,6 +159,7 @@ class MenuSectionController extends Controller
         $image->name = $request->name;
         $image->description = $request->description;
         $image->active = $request->has('active') ? $request->active : true;
+        $image->highlight = $request->has('highlight') ? $request->highlight : false;
         
         if ($request->hasFile('file')) {
             if ($image->file_path && Storage::disk('public')->exists($image->file_path)) {
