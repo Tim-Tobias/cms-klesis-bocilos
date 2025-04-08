@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function ($route) {
 
     $route->resource('today-menu/categories', CategoryController::class)->except(['show']);
     $route->resource('/today-menu', TodayMenuSectionController::class)->except(['show']);
-
+    
     $route->resource('footer', FooterSectionController::class)->except(['show']);
   });
 
