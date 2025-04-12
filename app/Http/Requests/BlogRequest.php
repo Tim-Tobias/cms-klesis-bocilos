@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SignatureSectionRequest extends FormRequest
+class BlogRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,11 @@ class SignatureSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'file' => $this->isMethod("post") ? ['required','image', 'max:4048'] : ['nullable','image', 'max:4048'],
-            'description' => ['max:255', 'string'],
+            'blog_category_id' => ['required'],
+            'title' => ['required', 'string'],
+            'content' => ['required', 'string'],
+            'image' => $this->isMethod('post') ? ['required', 'image', 'max:4028'] : ['nullable', 'image', 'max:4028'],
+            'active' => ['required', 'boolean']
         ];
     }
 }

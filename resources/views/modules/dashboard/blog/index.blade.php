@@ -1,6 +1,6 @@
 @extends('app')
 
-@section('title', 'Admin Dashboard - Categories')
+@section('title', 'Admin Dashboard - Blog')
 
 @push('styles')
 <link rel="stylesheet" href="{{asset('assets/compiled/css/table-datatable-jquery.css')}}">
@@ -12,11 +12,11 @@
 <div class="page-heading">
   <div class="page-title">
       <div class="row">
-          <x-title-content :title="'Categories'" :description="'this is for section one content'"/>
+          <x-title-content :title="'Blog'" :description="'this is for section blog'"/>
 
           <x-breadcrumb :items="[
               ['name' => 'Dashboard', 'url' => '/dashboard'],
-              ['name' => 'Today Menu Section'],
+              ['name' => 'Blog Section'],
           ]" />
       </div>
   </div>
@@ -31,7 +31,7 @@
             <div class="d-flex gap-3">
                 <button id="saveOrder" class="btn btn-info btn-sm d-none">Save Order</button>
 
-                <a class="btn btn-primary btn-sm d-flex" href="/dashboard/today-menu/create">
+                <a class="btn btn-primary btn-sm d-flex" href="/dashboard/blog/create">
                     <i class="bi bi-plus mr-2"></i>
                     Create
                 </a>
@@ -45,24 +45,26 @@
                         <tr>
                             <th>No</th>
                             <th>Image</th>
-                            <th>Name</th>
+                            <th>Title</th>
+                            <th>Content</th>
                             <th>Category</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($menus as $cat)
+                        @foreach ($blogs as $cat)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>
-                                <img style="width: 80px" src="{{ $cat->file_path }}" alt="">
+                                <img style="width: 80px" src="{{ $cat->image }}" alt="">
                             </td>
-                            <td>{{ $cat->name }}</td>
+                            <td>{{ $cat->title }}</td>
+                            <td>{!! limitText($cat->content) !!}</td>
                             <td>{{ $cat->category->name }}</td>
                             <td>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/today-menu/".$cat->id."/edit"}}">Edit</a>
-                                    <form action="{{"/dashboard/today-menu/".$cat->id}}" method="POST">
+                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/blog/".$cat->id."/edit"}}">Edit</a>
+                                    <form action="{{"/dashboard/blog/".$cat->id}}" method="POST">
                                         @csrf
                                         @method("DELETE")
 

@@ -1,16 +1,16 @@
 @extends('app')
 
-@section('title', 'Admin Dashboard - Create Home Section')
+@section('title', 'Admin Dashboard - Create Social Media Section')
 
 @section('content')
 <div class="page-heading">
   <div class="page-title">
       <div class="row">
-          <x-title-content :title="'Home Image Create'" :description="'this is for section one content'"/>
+          <x-title-content :title="'Social Media Create'" :description="'this is for social media'"/>
 
           <x-breadcrumb :items="[
               ['name' => 'Dashboard', 'url' => '/dashboard'],
-              ['name' => 'Home'],
+              ['name' => 'Social Media'],
           ]" />
       </div>
   </div>
@@ -18,7 +18,7 @@
   <section class="section">
     <div class="card">
         <div class="card-body">
-          <form action="/dashboard/home" method="POST" enctype="multipart/form-data">
+          <form action="/dashboard/social-media" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 
@@ -42,15 +42,15 @@
                 @enderror
             </div>
 
-            <div class="mb-3 col-12">
-                <label for="formFile" class="form-label">File</label>
-                <input class="form-control @error('file') is-invalid @enderror" type="file" name="file" id="formFile">
-                @error('file')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-                @enderror
-            </div>
+            <div class="form-group col-12">
+              <label for="basicInput">Path</label>
+              <input type="text" class="form-control @error('path') is-invalid @enderror" id="basicInput" name="path" placeholder="Enter Name" fdprocessedid="m3kdzr">
+              @error('path')
+              <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+              </span>
+              @enderror
+          </div>
 
             <button class="btn btn-primary btn-sm" type="submit">Save</button>
         </form>

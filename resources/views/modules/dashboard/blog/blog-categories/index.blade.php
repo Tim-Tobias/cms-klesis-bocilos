@@ -16,7 +16,7 @@
 
           <x-breadcrumb :items="[
               ['name' => 'Dashboard', 'url' => '/dashboard'],
-              ['name' => 'Today Menu Section'],
+              ['name' => 'Blog Categories'],
           ]" />
       </div>
   </div>
@@ -31,7 +31,7 @@
             <div class="d-flex gap-3">
                 <button id="saveOrder" class="btn btn-info btn-sm d-none">Save Order</button>
 
-                <a class="btn btn-primary btn-sm d-flex" href="/dashboard/today-menu/create">
+                <a class="btn btn-primary btn-sm d-flex" href="/dashboard/blog/categories/create">
                     <i class="bi bi-plus mr-2"></i>
                     Create
                 </a>
@@ -44,25 +44,19 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
-                            <th>Image</th>
                             <th>Name</th>
-                            <th>Category</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($menus as $cat)
+                        @foreach ($categories as $cat)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>
-                                <img style="width: 80px" src="{{ $cat->file_path }}" alt="">
-                            </td>
                             <td>{{ $cat->name }}</td>
-                            <td>{{ $cat->category->name }}</td>
                             <td>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/today-menu/".$cat->id."/edit"}}">Edit</a>
-                                    <form action="{{"/dashboard/today-menu/".$cat->id}}" method="POST">
+                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/blog/categories/".$cat->id."/edit"}}">Edit</a>
+                                    <form action="{{"/dashboard/blog/categories/".$cat->id}}" method="POST">
                                         @csrf
                                         @method("DELETE")
 

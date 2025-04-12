@@ -23,7 +23,7 @@ class HomeSectionCreateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'file' => ['required','image'],
+            'file' => $this->isMethod("post") ? ['required','image', 'max:4048'] : ['nullable','image', 'max:4048'],
             'description' => ['max:255', 'string'],
         ];
     }

@@ -1,6 +1,6 @@
 @extends('app')
 
-@section('title', 'Admin Dashboard - Categories')
+@section('title', 'Admin Dashboard - Signature')
 
 @push('styles')
 <link rel="stylesheet" href="{{asset('assets/compiled/css/table-datatable-jquery.css')}}">
@@ -12,11 +12,11 @@
 <div class="page-heading">
   <div class="page-title">
       <div class="row">
-          <x-title-content :title="'Categories'" :description="'this is for section one content'"/>
+          <x-title-content :title="'Web Config Section'" :description="'this is for web config'"/>
 
           <x-breadcrumb :items="[
               ['name' => 'Dashboard', 'url' => '/dashboard'],
-              ['name' => 'Today Menu Section'],
+              ['name' => 'Web Config'],
           ]" />
       </div>
   </div>
@@ -25,13 +25,13 @@
     <div class="card">
         <div class="card-header d-flex align-items-center justify-content-between">
             <h5 class="card-title">
-                Content
+                Web Config
             </h5>
             
             <div class="d-flex gap-3">
                 <button id="saveOrder" class="btn btn-info btn-sm d-none">Save Order</button>
 
-                <a class="btn btn-primary btn-sm d-flex" href="/dashboard/today-menu/create">
+                <a class="btn btn-primary btn-sm d-flex" href="/dashboard/social-media/create">
                     <i class="bi bi-plus mr-2"></i>
                     Create
                 </a>
@@ -44,25 +44,23 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
-                            <th>Image</th>
                             <th>Name</th>
-                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Path</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($menus as $cat)
+                        @foreach ($social_medias as $sm)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>
-                                <img style="width: 80px" src="{{ $cat->file_path }}" alt="">
-                            </td>
-                            <td>{{ $cat->name }}</td>
-                            <td>{{ $cat->category->name }}</td>
+                            <td>{{ $sm->name }}</td>
+                            <td>{{ $sm->description }}</td>
+                            <td>{{ $sm->path }}</td>
                             <td>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/today-menu/".$cat->id."/edit"}}">Edit</a>
-                                    <form action="{{"/dashboard/today-menu/".$cat->id}}" method="POST">
+                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/social-media/".$sm->id."/edit"}}">Edit</a>
+                                    <form action="{{"/dashboard/social-media/".$sm->id}}" method="POST">
                                         @csrf
                                         @method("DELETE")
 

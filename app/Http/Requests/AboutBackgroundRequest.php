@@ -22,7 +22,7 @@ class AboutBackgroundRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['image', 'required']
+            'file' => ['image', 'required', 'max:4048']
         ];
     }
 }

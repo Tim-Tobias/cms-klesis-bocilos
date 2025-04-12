@@ -1,16 +1,16 @@
 @extends('app')
 
-@section('title', 'Admin Dashboard - Create Home Section')
+@section('title', 'Admin Dashboard - Create Gallery')
 
 @section('content')
 <div class="page-heading">
   <div class="page-title">
       <div class="row">
-          <x-title-content :title="'Home Image Create'" :description="'this is for section one content'"/>
+          <x-title-content :title="'Gallery Create'" :description="'this is for section one content'"/>
 
           <x-breadcrumb :items="[
               ['name' => 'Dashboard', 'url' => '/dashboard'],
-              ['name' => 'Home'],
+              ['name' => 'Gallery'],
           ]" />
       </div>
   </div>
@@ -18,7 +18,7 @@
   <section class="section">
     <div class="card">
         <div class="card-body">
-          <form action="/dashboard/home" method="POST" enctype="multipart/form-data">
+          <form action="/dashboard/gallery" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 

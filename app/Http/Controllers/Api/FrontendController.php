@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
+use App\Models\BlogCategory;
 use App\Models\Category;
 use App\Models\Content;
 use App\Models\File;
 use App\Models\Image;
 use App\Models\Menu;
+use App\Models\SocialMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -24,6 +27,23 @@ class FrontendController extends Controller
 
         return response()->json([
             'images' => $images
+        ]);
+    }
+
+    public function Gallery() 
+    {
+        $images = Image::category('gallery-section')->type('image')->active()->ordered()->get();
+
+        foreach($images as $image) {
+            $image->file_path = request()->getSchemeAndHttpHost() . '/storage/' . $image->file_path;
+        }
+
+        $background = Image::category('gallery-section')->type('background')->active()->first();
+        $background->file_path = request()->getSchemeAndHttpHost() . '/storage/' . $background->file_path;
+
+        return response()->json([
+            'images' => $images,
+            'background' => $background
         ]);
     }
 
@@ -115,6 +135,50 @@ class FrontendController extends Controller
 
         return response()->json([
             'menus' => $menus
+        ]);
+    }
+
+    public function BlogCategories()
+    {
+        $categories = BlogCategory::all();
+
+        return response()->json([
+            'categories' => $categories
+        ]);
+    }
+
+    public function blog(Request $request)
+    {
+        $query = Blog::query()->with('category');
+
+        if ($request->has('category') && strtolower($request->category) !== 'all') {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('name', $request->category);
+            });
+        }
+
+        $blogs = $query->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'blogs' => $blogs
+        ]);
+    }
+
+    public function blogDetail(Request $request, $id)
+    {
+        $blog = Blog::with('category')->findOrFail($id);
+
+        return response()->json([
+            'blog' => $blog
+        ]);
+    }
+
+    public function socialMedia()
+    {
+        $socialMedia = SocialMedia::get();
+
+        return response()->json([
+            'social_media' => $socialMedia
         ]);
     }
 

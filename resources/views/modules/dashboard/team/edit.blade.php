@@ -30,15 +30,17 @@
 
             <div class="form-group mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-                <textarea name="content" id="editor" rows="5" class="form-control @error('content') is-invalid @enderror">
-                    {{ $content->content }}
-                </textarea>
+                <div id="snow" class="form-control @error('content') is-invalid @enderror">
+                    {!! $content->content !!}
+                </div>
                 @error('content')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
                 @enderror
             </div>
+
+            <input type="hidden" name="content" id="content">
 
             <button class="btn btn-primary btn-sm" type="submit">Save</button>
         </form>
@@ -48,27 +50,14 @@
 </div>
 @endsection
 
-@prepend('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/34.2.0/classic/ckeditor.js"></script>
-@endprepend
-
 @push('scripts')
 <script>
-    ClassicEditor.create(document.querySelector("#editor"), {
-        toolbar: [
-                'heading',
-                '|',
-                'bold',
-                'italic',
-                'link',
-                'bulletedList',
-                'numberedList',
-                'blockQuote',
-                'undo',
-                'redo'
-            ]
-    }).catch((error) => {
-        console.error(error)
+    var snow = new Quill("#snow", {
+        theme: "snow",
     })
+
+    document.querySelector('form').addEventListener('submit', function () {
+        document.querySelector('#content').value = snow.root.innerHTML;
+    });
 </script>
 @endpush
