@@ -6,6 +6,7 @@ use App\Http\Requests\AboutContentRequest;
 use App\Models\Content;
 use App\Models\Image;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class TeamSectionController extends Controller
 {
@@ -14,10 +15,69 @@ class TeamSectionController extends Controller
      */
     public function index()
     {
-        $images = Image::category('team-section')->active()->ordered()->get();
-        $contents = Content::category('team-section')->get();
+        $contents = Content::category('team-section')->get()->count();
 
-        return view('modules.dashboard.team.index', compact('images', 'contents'));
+        return view('modules.dashboard.team.index', compact('contents'));
+    }
+
+    public function GetDataImage(Request $request)
+    {
+        if ($request->ajax()) {
+            $teams = Image::category('team-section')->active()->select(['id','name', 'order', 'file_path', 'description', 'active']);
+
+            return DataTables::of($teams)
+                ->addIndexColumn()
+                ->editColumn('file_path', function ($row) {
+                    return '<img src="' . asset('storage/'. $row->file_path) . '" height="50"/>';
+                })
+                ->editColumn('active', function ($row) {
+                    if($row->active) {
+                        return '<span class="badge bg-success">Active</span>';
+                    }else {
+                        return '<span class="badge bg-danger">Deactive</span>';
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/team/image/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/team/image/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action', 'file_path', 'active'])
+                ->make(true);
+        }
+    }
+
+    public function GetDataContent(Request $request)
+    {
+        if ($request->ajax()) {
+            $teams = Content::category('team-section')->active();
+
+            return DataTables::of($teams)
+                ->addIndexColumn()
+
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/team/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/team/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                    HTML;
+                })
+                ->rawColumns(['action', 'content'])
+                ->make(true);
+        }
     }
 
     /**

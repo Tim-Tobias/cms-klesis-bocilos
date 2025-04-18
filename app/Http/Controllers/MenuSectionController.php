@@ -9,6 +9,7 @@ use App\Models\File;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class MenuSectionController extends Controller
 {
@@ -22,6 +23,43 @@ class MenuSectionController extends Controller
         $file = File::first();
 
         return view('modules.dashboard.menu.index', compact('background', 'images', 'file'));
+    }
+
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $images = Image::category('menu-section')->type('image')->active()->select(['id','name', 'order', 'file_path', 'description', 'active']);
+
+            return DataTables::of($images)
+                ->addIndexColumn()
+                ->editColumn('file_path', function ($row) {
+                    return '<img src="' . asset('storage/'. $row->file_path) . '" height="50"/>';
+                })
+                ->editColumn('active', function ($row) {
+                    if($row->active) {
+                        return '<span class="badge bg-success">Active</span>';
+                    }else {
+                        return '<span class="badge bg-danger">Deactive</span>';
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/menu/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/menu/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action', 'file_path', 'active'])
+                ->make(true);
+        }
     }
 
     public function EditBackground(AboutBackgroundRequest $request, Image $image)

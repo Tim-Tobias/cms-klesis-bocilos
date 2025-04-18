@@ -22,13 +22,16 @@
             @csrf
             @method('POST')
 
-            <div class="form-group col-12">
-                <label for="basicInput">Name</label>
-                <input type="text" class="form-control @error('email') is-invalid @enderror" id="basicInput" name="name" placeholder="Enter Name" fdprocessedid="m3kdzr">
+            <div class="input-group mb-3 col-12">
+                <label class="input-group-text" for="inputGroupSelect01">Social Media</label>
+                <select class="form-select @error('name') is-invalid @enderror" name="name" id="inputGroupSelect01">
+                    <option value="instagram">Instagram</option>
+                    <option value="whatsapp">Whatsapp</option>
+                </select>
                 @error('name')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
                 @enderror
             </div>
 

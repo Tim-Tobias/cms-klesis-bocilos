@@ -31,16 +31,18 @@
             <div class="d-flex gap-3">
                 <button id="saveOrder" class="btn btn-info btn-sm d-none">Save Order</button>
 
+                @if ($social_medias < 2)
                 <a class="btn btn-primary btn-sm d-flex" href="/dashboard/social-media/create">
                     <i class="bi bi-plus mr-2"></i>
                     Create
                 </a>
+                @endif
             </div>
         </div>
 
         <div class="card-body overflow-auto">
             <div class="table-responsive">
-                <table class="table mb-0">
+                <table id="datatable" class="table mb-0">
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
@@ -50,27 +52,6 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach ($social_medias as $sm)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $sm->name }}</td>
-                            <td>{{ $sm->description }}</td>
-                            <td>{{ $sm->path }}</td>
-                            <td>
-                                <div class="d-flex gap-2 align-items-center">
-                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/social-media/".$sm->id."/edit"}}">Edit</a>
-                                    <form action="{{"/dashboard/social-media/".$sm->id}}" method="POST">
-                                        @csrf
-                                        @method("DELETE")
-
-                                        <button type="submit" class="btn btn-danger btn-sm" href="">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -78,3 +59,29 @@
   </section>
 </div>
 @endsection
+
+@prepend('scripts')
+<script src="{{ asset('assets/extensions/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/static/js/pages/datatables.js') }}"></script>
+@endprepend
+
+@push('scripts')
+<script>
+    $(function () {
+        $('#datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('social_media.data') }}',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'name', name: 'name', orderable: false, searchable: true },
+                { data: 'description', name: 'description', orderable: false },
+                { data: 'path', name: 'path' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ]
+        });
+    });
+</script>
+@endpush

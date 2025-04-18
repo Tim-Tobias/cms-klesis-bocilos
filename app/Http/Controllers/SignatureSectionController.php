@@ -7,6 +7,7 @@ use App\Http\Requests\SignatureSectionRequest;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class SignatureSectionController extends Controller
 {
@@ -16,9 +17,46 @@ class SignatureSectionController extends Controller
     public function index(Image $image)
     {
         $background = $image->category('signature-section')->type('background')->active()->first();
-        $images = $image->category('signature-section')->type('image')->active()->ordered()->get();
+        $images = $image->category('signature-section')->type('image')->active()->get()->count();
 
         return view('modules.dashboard.signature.index', compact('background', 'images'));
+    }
+
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $images = Image::category('signature-section')->type('image')->active()->select(['id','name', 'order', 'file_path', 'description', 'active']);
+
+            return DataTables::of($images)
+                ->addIndexColumn()
+                ->editColumn('file_path', function ($row) {
+                    return '<img src="' . asset('storage/'. $row->file_path) . '" height="50"/>';
+                })
+                ->editColumn('active', function ($row) {
+                    if($row->active) {
+                        return '<span class="badge bg-success">Active</span>';
+                    }else {
+                        return '<span class="badge bg-danger">Deactive</span>';
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/signature/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/signature/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action', 'file_path', 'active'])
+                ->make(true);
+        }
     }
 
     public function EditBackground(AboutBackgroundRequest $request, Image $image)

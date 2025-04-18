@@ -1,6 +1,6 @@
 @extends('app')
 
-@section('title', 'Admin Dashboard - Categories')
+@section('title', 'Admin Dashboard - Today Mennu')
 
 @push('styles')
 <link rel="stylesheet" href="{{asset('assets/compiled/css/table-datatable-jquery.css')}}">
@@ -12,7 +12,7 @@
 <div class="page-heading">
   <div class="page-title">
       <div class="row">
-          <x-title-content :title="'Categories'" :description="'this is for section one content'"/>
+          <x-title-content :title="'Today Menu'" :description="'this is for section one content'"/>
 
           <x-breadcrumb :items="[
               ['name' => 'Dashboard', 'url' => '/dashboard'],
@@ -40,7 +40,7 @@
 
         <div class="card-body overflow-auto">
             <div class="table-responsive">
-                <table class="table mb-0">
+                <table id="datatable" class="table mb-0">
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
@@ -50,29 +50,6 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach ($menus as $cat)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>
-                                <img style="width: 80px" src="{{ $cat->file_path }}" alt="">
-                            </td>
-                            <td>{{ $cat->name }}</td>
-                            <td>{{ $cat->category->name }}</td>
-                            <td>
-                                <div class="d-flex gap-2 align-items-center">
-                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/today-menu/".$cat->id."/edit"}}">Edit</a>
-                                    <form action="{{"/dashboard/today-menu/".$cat->id}}" method="POST">
-                                        @csrf
-                                        @method("DELETE")
-
-                                        <button type="submit" class="btn btn-danger btn-sm" href="">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -80,3 +57,29 @@
   </section>
 </div>
 @endsection
+
+@prepend('scripts')
+<script src="{{ asset('assets/extensions/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/static/js/pages/datatables.js') }}"></script>
+@endprepend
+
+@push('scripts')
+<script>
+    $(function () {
+        $('#datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('today_menu.data') }}',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'file_path', name: 'file_path', orderable: false, searchable: false },
+                { data: 'name', name: 'name', orderable: false, searchable: true },
+                { data: 'category', name: 'category.name', orderable: false, searchable: true },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ]
+        });
+    });
+</script>
+@endpush

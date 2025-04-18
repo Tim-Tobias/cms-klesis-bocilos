@@ -18,12 +18,45 @@ class HomeSectionController extends Controller
      */
     public function index()
     {
-        $home_images = Image::category('home-section')
-                            ->active()
-                            ->ordered()
-                            ->get();
+        return view('modules.dashboard.home.index');
+    }
 
-        return view('modules.dashboard.home.index', compact('home_images'));
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $images = Image::category('home-section')
+                            ->active()->select(['id','name', 'order', 'file_path', 'description', 'active']);
+
+            return DataTables::of($images)
+                ->addIndexColumn()
+                ->editColumn('file_path', function ($row) {
+                    return '<img src="' . asset('storage/'. $row->file_path) . '" height="50"/>';
+                })
+                ->editColumn('active', function ($row) {
+                    if($row->active) {
+                        return '<span class="badge bg-success">Active</span>';
+                    }else {
+                        return '<span class="badge bg-danger">Deactive</span>';
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/home/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/home/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action', 'file_path', 'active'])
+                ->make(true);
+        }
     }
 
     /**

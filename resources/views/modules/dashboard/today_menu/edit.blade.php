@@ -61,7 +61,7 @@
                 <div class="d-flex gap-3 align-items-center col-md-6 col-sm-12">
                     <div>
                         <p>Preview:</p>
-                        <img id="preview-image" style="width: 100px" src="{{ asset('storage/'. $menu->file_path) }}" alt="">
+                        <img id="preview-image" style="width: 100px" src="{{$menu->file_path }}" alt="">
                     </div>
                 </div>
             </div>

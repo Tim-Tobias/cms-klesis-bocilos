@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -13,9 +14,34 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::latest()->paginate(10);
+        return view('modules.dashboard.today_menu.categories.index');
+    }
 
-        return view('modules.dashboard.today_menu.categories.index', compact('categories'));
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $images = Category::query();
+
+            return DataTables::of($images)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/today-menu/categories/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/today-menu/categories/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

@@ -98,53 +98,18 @@
 
         <div class="card-body overflow-auto">
             <div class="table-responsive">
-                <table class="table mb-0">
+                <table id="datatable" class="table mb-0">
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
-                            <th>Image</th>
                             <th>Name</th>
+                            <th>Image</th>
                             <th>Description</th>
-                            <th>Highlight</th>
+                            <th>Order</th>
                             <th>Active</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach ($images as $image)
-                        <tr>
-                            <td>{{ $image->order }}</td>
-                            <td><img src="{{ asset('storage/' . $image->file_path) }}" width="100" /></td>
-                            <td>{{ $image->name }}</td>
-                            <td>{{ $image->description }}</td>
-                            <td>
-                                @if ($image->highlight)
-                                <span class="badge bg-success">Active</span>
-                                @else
-                                <span class="badge bg-danger">Deactive</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($image->active)
-                                <span class="badge bg-success">Active</span>
-                                @else
-                                <span class="badge bg-danger">Deactive</span>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2 align-items-center">
-                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/menu/".$image->id."/edit"}}">Edit</a>
-                                    <form action="{{"/dashboard/menu/".$image->id}}" method="POST">
-                                        @csrf
-                                        @method("DELETE")
-
-                                        <button type="submit" class="btn btn-danger btn-sm" href="">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -152,3 +117,31 @@
   </section>
 </div>
 @endsection
+
+@prepend('scripts')
+<script src="{{ asset('assets/extensions/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/static/js/pages/datatables.js') }}"></script>
+@endprepend
+
+@push('scripts')
+<script>
+    $(function () {
+        $('#datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('menu.data') }}',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'name', name: 'name', orderable: false, searchable: true },
+                { data: 'file_path', name: 'file_path', orderable: false, searchable: false },
+                { data: 'description', name: 'description', orderable: false, searchable: true },
+                { data: 'order', name: 'order', orderable: true },
+                { data: 'active', name: 'active', searchable: false },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ]
+        });
+    });
+</script>
+@endpush

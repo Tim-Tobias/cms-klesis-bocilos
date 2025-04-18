@@ -22,9 +22,12 @@
             @csrf
             @method('PUT')
 
-            <div class="form-group col-12 mb-3">
-                <label for="basicInput">Name</label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" id="basicInput" value="{{ $social->name }}" name="name" placeholder="Enter Name" fdprocessedid="m3kdzr">
+            <div class="input-group mb-3 col-12">
+                <label class="input-group-text" for="inputGroupSelect01">Social Media</label>
+                <select class="form-select @error('name') is-invalid @enderror" name="name" id="inputGroupSelect01">
+                    <option {{ $social->name === 'instagram' ? 'selected' : '' }} value="instagram">Instagram</option>
+                    <option {{ $social->name === 'whatsapp' ? 'selected' : '' }} value="whatsapp">Whatsapp</option>
+                </select>
                 @error('name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

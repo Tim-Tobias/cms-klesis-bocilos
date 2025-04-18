@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class TodayMenuSectionController extends Controller
 {
@@ -15,8 +16,40 @@ class TodayMenuSectionController extends Controller
      */
     public function index()
     {
-        $menus = Menu::with('category')->latest()->paginate(10);
-        return view('modules.dashboard.today_menu.index', compact('menus'));
+        return view('modules.dashboard.today_menu.index');
+    }
+
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $menus = Menu::with('category');
+
+            return DataTables::of($menus)
+                ->addIndexColumn()
+                ->editColumn('file_path', function ($row) {
+                    return '<img src="' . $row->file_path . '" height="50"/>';
+                })
+                ->editColumn('category', function ($row) {
+                    return $row->category->name ?? '-';
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/today-menu/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/today-menu/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action', 'file_path'])
+                ->make(true);
+        }
     }
 
     /**
@@ -70,7 +103,7 @@ class TodayMenuSectionController extends Controller
     {
         $menu = Menu::where('id', $id)->first();
 
-        $data = $request->only(['name', 'id_categories']);
+        $data = $request->only(['name', 'id_category']);
 
         if ($request->hasFile('file_path')) {
             if ($menu->file_path) {
@@ -80,6 +113,8 @@ class TodayMenuSectionController extends Controller
             $file = $request->file('file_path');
             $data['file_path'] = $file->store('menus', 'public');
         }
+
+        $menu->id_category = $data['id_category'];
 
         $menu->update($data);
 

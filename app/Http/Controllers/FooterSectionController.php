@@ -7,6 +7,7 @@ use App\Models\Content;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class FooterSectionController extends Controller
 {
@@ -16,9 +17,28 @@ class FooterSectionController extends Controller
     public function index()
     {
         $image = Image::category('footer-section')->first();
-        $contents = Content::category('footer-section')->active()->get();
+        $contents = Content::category('footer-section')->active()->get()->count();
 
         return view('modules.dashboard.footer.index', compact('image', 'contents'));
+    }
+
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $contents = Content::category('footer-section')->active()->select(['id','content']);
+
+            return DataTables::of($contents)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/about/'.$row->id.'/edit';
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                    HTML;
+                })
+                ->rawColumns(['action', 'content'])
+                ->make(true);
+        }
     }
 
     public function EditBackground(AboutBackgroundRequest $request, Image $image)

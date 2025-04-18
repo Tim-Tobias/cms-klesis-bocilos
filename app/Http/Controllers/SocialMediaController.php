@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SocialMediaRequest;
 use App\Models\SocialMedia;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class SocialMediaController extends Controller
 {
@@ -14,6 +15,33 @@ class SocialMediaController extends Controller
     public function index()
     {
         //
+    }
+
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $images = SocialMedia::query();
+
+            return DataTables::of($images)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/social-media/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/social-media/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

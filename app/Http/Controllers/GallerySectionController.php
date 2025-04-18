@@ -7,9 +7,7 @@ use App\Http\Requests\HomeSectionCreateRequest;
 use App\Http\Requests\HomeSectionUpdateRequest;
 use App\Models\Image;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class GallerySectionController extends Controller
@@ -19,17 +17,48 @@ class GallerySectionController extends Controller
      */
     public function index()
     {
-        $gallery_images = Image::category('gallery-section')
-                            ->active()
-                            ->type('image')
-                            ->ordered()
-                            ->get();
-
-        
         $background = Image::category('gallery-section')->type('background')->active()->first();
         
 
-        return view('modules.dashboard.gallery.index', compact('gallery_images', 'background'));
+        return view('modules.dashboard.gallery.index', compact('background'));
+    }
+
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $images = Image::category('gallery-section')->type('image')
+                            ->active()->select(['id','name', 'order', 'file_path', 'description', 'active']);
+
+            return DataTables::of($images)
+                ->addIndexColumn()
+                ->editColumn('file_path', function ($row) {
+                    return '<img src="' . asset('storage/'. $row->file_path) . '" height="50"/>';
+                })
+                ->editColumn('active', function ($row) {
+                    if($row->active) {
+                        return '<span class="badge bg-success">Active</span>';
+                    }else {
+                        return '<span class="badge bg-danger">Deactive</span>';
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/gallery/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/gallery/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action', 'file_path', 'active'])
+                ->make(true);
+        }
     }
 
     public function EditBackground(AboutBackgroundRequest $request, Image $image)

@@ -7,7 +7,7 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-lg-0">
-          <li class="nav-item dropdown me-3">
+          {{-- <li class="nav-item dropdown me-3">
             <a
               class="nav-link active dropdown-toggle text-gray-600"
               href="#"
@@ -61,7 +61,7 @@
                 </p>
               </li>
             </ul>
-          </li>
+          </li> --}}
         </ul>
         <div class="dropdown">
           <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,7 +80,7 @@
             <li>
               <h6 class="dropdown-header">Hello, {{Auth::user()->name}}</h6>
             </li>
-            <li>
+            {{-- <li>
               <a class="dropdown-item" href="#"
                 ><i class="icon-mid bi bi-person me-2"></i> My
                 Profile</a
@@ -90,7 +90,7 @@
               <a class="dropdown-item" href="#"
                 ><i class="icon-mid bi bi-gear me-2"></i> Settings</a
               >
-            </li>
+            </li> --}}
             <li>
               <hr class="dropdown-divider" />
             </li>

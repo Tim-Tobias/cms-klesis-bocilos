@@ -31,7 +31,7 @@
             <div class="d-flex gap-3">
                 <button id="saveOrder" class="btn btn-info btn-sm d-none">Save Order</button>
 
-                @if (count($contents) === 0)
+                @if ($contents === 0)
                 <a class="btn btn-primary btn-sm d-flex" href="/dashboard/team/create">
                     <i class="bi bi-plus mr-2"></i>
                     Create
@@ -42,7 +42,7 @@
 
         <div class="card-body overflow-auto">
             <div class="table-responsive">
-                <table class="table mb-0">
+                <table id="datatable_content" class="table mb-0">
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
@@ -50,19 +50,6 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach ($contents as $content)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{!! $content->content !!}</td>
-                                <td>
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <a class="btn btn-primary btn-sm" href="{{"/dashboard/team/".$content->id."/edit"}}">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -88,45 +75,18 @@
 
         <div class="card-body overflow-auto">
             <div class="table-responsive">
-                <table class="table mb-0">
+                <table id="datatable_image" class="table mb-0">
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
-                            <th>Image</th>
                             <th>Name</th>
+                            <th>Image</th>
                             <th>Description</th>
+                            <th>Order</th>
                             <th>Active</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach ($images as $image)
-                        <tr>
-                            <td>{{ $image->order }}</td>
-                            <td><img src="{{ asset('storage/' . $image->file_path) }}" width="100" /></td>
-                            <td>{{ $image->name }}</td>
-                            <td>{{ $image->description }}</td>
-                            <td>
-                                @if ($image->active)
-                                <span class="badge bg-success">Active</span>
-                                @else
-                                <span class="badge bg-danger">Deactive</span>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2 align-items-center">
-                                    <a class="btn btn-primary btn-sm" href="{{"/dashboard/team/image/".$image->id."/edit"}}">Edit</a>
-                                    <form action="{{"/dashboard/team/image/".$image->id}}" method="POST">
-                                        @csrf
-                                        @method("DELETE")
-
-                                        <button type="submit" class="btn btn-danger btn-sm" href="">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -134,3 +94,42 @@
   </section>
 </div>
 @endsection
+
+@prepend('scripts')
+<script src="{{ asset('assets/extensions/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/static/js/pages/datatables.js') }}"></script>
+@endprepend
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('#datatable_image').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('team.image.data') }}',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'name', name: 'name', orderable: false, searchable: true },
+                { data: 'file_path', name: 'file_path', orderable: false, searchable: false },
+                { data: 'description', name: 'description', orderable: false, searchable: true },
+                { data: 'order', name: 'order', orderable: true },
+                { data: 'active', name: 'active', searchable: false },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ]
+    });
+
+    $('#datatable_content').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('team.content.data') }}',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'content', name: 'content', orderable: false, searchable: true },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ]
+        });
+});
+</script>
+@endpush

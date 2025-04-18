@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryRequest;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class BlogCategoryController extends Controller
 {
@@ -16,6 +17,33 @@ class BlogCategoryController extends Controller
         $categories = BlogCategory::orderBy('created_at', 'desc')->paginate(10);
 
         return view('modules.dashboard.blog.blog-categories.index', compact('categories'));
+    }
+
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $images = BlogCategory::query();
+
+            return DataTables::of($images)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/blog/categories/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/blog/categories/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

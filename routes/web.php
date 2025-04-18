@@ -8,7 +8,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FooterSectionController;
 use App\Http\Controllers\GallerySectionController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomeSectionController;
 use App\Http\Controllers\MenuSectionController;
 use App\Http\Controllers\SignatureSectionController;
@@ -60,6 +59,20 @@ Route::middleware('auth')->group(function ($route) {
     $route->patch('gallery/edit-background', [GallerySectionController::class, 'editBackground']);
 
     $route->patch('menu/edit-file', [MenuSectionController::class, 'editFile']);
+
+    $route->get('/home/data', [HomeSectionController::class, 'getData'])->name('home.data');
+    $route->get('/gallery/data', [GallerySectionController::class, 'getData'])->name('gallery.data');
+    $route->get('/about/data', [AboutSectionController::class, 'getData'])->name('about.data');
+    $route->get('/team/data', [TeamSectionController::class, 'getDataImage'])->name('team.image.data');
+    $route->get('/team/content/data', [TeamSectionController::class, 'getDataContent'])->name('team.content.data');
+    $route->get('/signature/data', [SignatureSectionController::class, 'getData'])->name('signature.data');
+    $route->get('/menu/data', [MenuSectionController::class, 'getData'])->name('menu.data');
+    $route->get('/today_menu/categories/data', [CategoryController::class, 'getData'])->name('today_menu_categories.data');
+    $route->get('/today_menu/data', [TodayMenuSectionController::class, 'getData'])->name('today_menu.data');
+    $route->get('/blog/categories/data', [BlogCategoryController::class, 'getData'])->name('blog_categories.data');
+    $route->get('/blog/data', [BlogController::class, 'getData'])->name('blog.data');
+    $route->get('/social-media/data', [SocialMediaController::class, 'getData'])->name('social_media.data');
+    $route->get('/footer/data', [FooterSectionController::class, 'getData'])->name('footer.data');
 
     $route->resource('home', HomeSectionController::class)->except(['show']);
     $route->resource('gallery', GallerySectionController::class)->except(['show']);

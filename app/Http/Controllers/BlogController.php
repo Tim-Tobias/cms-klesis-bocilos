@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class BlogController extends Controller
 {
@@ -15,9 +16,43 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = Blog::latest()->paginate(10);
+        return view('modules.dashboard.blog.index');
+    }
 
-        return view('modules.dashboard.blog.index', compact('blogs'));
+    public function GetData(Request $request)
+    {
+        if ($request->ajax()) {
+            $blogs = Blog::with('category')->select('blogs.*');
+
+            return DataTables::of($blogs)
+                ->addIndexColumn()
+                ->editColumn('image', function ($row) {
+                    return '<img src="' . $row->image . '" height="50"/>';
+                })
+                ->editColumn('category', function ($row) {
+                    return $row->category->name ?? '-';
+                })
+                ->editColumn('content', function ($row) {
+                    return limitText($row->content);
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = '/dashboard/blog/'.$row->id.'/edit';
+                    $deleteUrl = '/dashboard/blog/'.$row->id;
+                    $csrf = csrf_field();
+                    $method = method_field('DELETE');
+
+                    return <<<HTML
+                        <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{$deleteUrl}" method="POST" style="display:inline-block;">
+                            {$csrf}
+                            {$method}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    HTML;
+                })
+                ->rawColumns(['action', 'image', 'content'])
+                ->make(true);
+        }
     }
 
     /**

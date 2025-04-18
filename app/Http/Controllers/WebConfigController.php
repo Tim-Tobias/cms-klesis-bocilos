@@ -9,7 +9,7 @@ class WebConfigController extends Controller
 {
     public function index()
     {
-        $social_medias = SocialMedia::get();
+        $social_medias = SocialMedia::get()->count();
 
         return view('modules.dashboard.web-config.index', compact('social_medias'));
     }
