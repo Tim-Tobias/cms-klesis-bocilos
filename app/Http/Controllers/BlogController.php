@@ -117,7 +117,7 @@ class BlogController extends Controller
                 Storage::disk('public')->delete($blog->image);
             }
     
-            $data['image'] = $request->file('image')->store('blogs', 'public');
+            $blog->image = $request->file('image')->store('blogs', 'public');
         }
 
         $blog->blog_category_id = $request->blog_category_id;

@@ -30,7 +30,7 @@ class FooterSectionController extends Controller
             return DataTables::of($contents)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $editUrl = '/dashboard/about/'.$row->id.'/edit';
+                    $editUrl = '/dashboard/footer/'.$row->id.'/edit';
 
                     return <<<HTML
                         <a href="{$editUrl}" class="btn btn-sm btn-primary">Edit</a>

@@ -15,6 +15,7 @@ use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\TeamImageController;
 use App\Http\Controllers\TeamSectionController;
 use App\Http\Controllers\TodayMenuSectionController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebConfigController;
 use Illuminate\Support\Facades\Route;
 
@@ -73,6 +74,7 @@ Route::middleware('auth')->group(function ($route) {
     $route->get('/blog/data', [BlogController::class, 'getData'])->name('blog.data');
     $route->get('/social-media/data', [SocialMediaController::class, 'getData'])->name('social_media.data');
     $route->get('/footer/data', [FooterSectionController::class, 'getData'])->name('footer.data');
+    $route->get('/users/data', [UserController::class, 'getData'])->name('users.data');
 
     $route->resource('home', HomeSectionController::class)->except(['show']);
     $route->resource('gallery', GallerySectionController::class)->except(['show']);
@@ -89,6 +91,8 @@ Route::middleware('auth')->group(function ($route) {
     $route->resource('blog', BlogController::class)->except(['show']);
 
     $route->resource('footer', FooterSectionController::class)->except(['show']);
+
+    $route->resource('users', UserController::class);
 
     $route->get('web-config', [WebConfigController::class, 'index']);
     $route->resource('social-media', SocialMediaController::class)->except(['show', 'index']);

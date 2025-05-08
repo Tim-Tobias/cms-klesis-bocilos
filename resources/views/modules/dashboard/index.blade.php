@@ -1,6 +1,7 @@
 <div class="app">
     <x-layouts.sidebar :menus="[
         ['title' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'bi bi-grid-fill'],
+        ['title' => 'Users', 'route' => 'dashboard/users', 'icon' => 'bi bi-people-fill'],
         ['title' => 'Home Section', 'route' => 'dashboard/home', 'icon' => 'bi bi-house-door-fill'],
         ['title' => 'Gallery Section', 'route' => 'dashboard/gallery', 'icon' => 'bi bi-house-door-fill'],
         ['title' => 'About Section', 'route' => 'dashboard/about', 'icon' => 'bi bi-book-fill'],
