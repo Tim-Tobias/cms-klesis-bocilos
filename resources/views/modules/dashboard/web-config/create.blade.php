@@ -27,6 +27,8 @@
                 <select class="form-select @error('name') is-invalid @enderror" name="name" id="inputGroupSelect01">
                     <option value="instagram">Instagram</option>
                     <option value="whatsapp">Whatsapp</option>
+                    <option value="tiktok">Tiktok</option>
+                    <option value="facebook">Facebook</option>
                 </select>
                 @error('name')
                     <span class="invalid-feedback" role="alert">

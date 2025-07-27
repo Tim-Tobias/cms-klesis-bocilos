@@ -31,12 +31,10 @@
             <div class="d-flex gap-3">
                 <button id="saveOrder" class="btn btn-info btn-sm d-none">Save Order</button>
 
-                @if ($social_medias < 2)
                 <a class="btn btn-primary btn-sm d-flex" href="/dashboard/social-media/create">
                     <i class="bi bi-plus mr-2"></i>
                     Create
                 </a>
-                @endif
             </div>
         </div>
 
